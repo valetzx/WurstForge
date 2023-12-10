@@ -23,63 +23,66 @@ import net.minecraft.text.Text;
 import net.wurstclient.WurstClient;
 import net.wurstclient.altmanager.screens.AltManagerScreen;
 import net.wurstclient.mixinterface.IScreen;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.util.Identifier;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen
 {
 	private ClickableWidget realmsButton = null;
 	private ButtonWidget altsButton;
-	
+
+	private final Identifier CMM_BUTTON_TEXTURES = new Identifier("wurst", "cmmbutton.png");
+
 	private TitleScreenMixin(WurstClient wurst, Text text_1)
 	{
 		super(text_1);
 	}
-	
+
 	@Inject(at = {@At("RETURN")}, method = {"init()V"})
 	private void onInitWidgetsNormal(CallbackInfo ci)
 	{
 		if(!WurstClient.INSTANCE.isEnabled())
 			return;
-		
+
 		for(Drawable d : ((IScreen)this).getButtons())
 		{
 			if(!(d instanceof ClickableWidget))
 				continue;
-			
+
 			ClickableWidget button = (ClickableWidget)d;
 			if(!button.getMessage().getString()
 				.equals(I18n.translate("menu.online")))
 				continue;
-			
+
 			realmsButton = button;
 			break;
 		}
-		
+
 		if(realmsButton == null)
 			throw new IllegalStateException("Couldn't find realms button!");
-		
+
 		// make Realms button smaller
 		realmsButton.setWidth(98);
-		
+
 		// add AltManager button
-		addDrawableChild(altsButton = ButtonWidget
-			.builder(Text.literal("Alt Manager"),
+		addDrawableChild(altsButton = new TexturedButtonWidget(width / 2 + 104,
+				realmsButton.getY(), 20, 20, 0, 0, 20, CMM_BUTTON_TEXTURES, 20, 40,
 				b -> client.setScreen(new AltManagerScreen(this,
-					WurstClient.INSTANCE.getAltManager())))
-			.dimensions(width / 2 + 2, realmsButton.getY(), 98, 20).build());
+						WurstClient.INSTANCE.getAltManager())), Text.literal("Alt Manager")));
 	}
-	
+
 	@Inject(at = {@At("RETURN")}, method = {"tick()V"})
 	private void onTick(CallbackInfo ci)
 	{
 		if(realmsButton == null || altsButton == null)
 			return;
-			
+
 		// adjust AltManager button if Realms button has been moved
 		// happens when ModMenu is installed
 		altsButton.setY(realmsButton.getY());
 	}
-	
+
 	/**
 	 * Stops the multiplayer button being grayed out if the user's Microsoft
 	 * account is parental-control'd or banned from online play.
