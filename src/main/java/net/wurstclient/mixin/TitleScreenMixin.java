@@ -27,71 +27,66 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.util.Identifier;
 
 @Mixin(TitleScreen.class)
-public abstract class TitleScreenMixin extends Screen
-{
-	private ClickableWidget realmsButton = null;
-	private ButtonWidget altsButton;
+public abstract class TitleScreenMixin extends Screen {
+    private ClickableWidget realmsButton = null;
+    private ButtonWidget altsButton;
 
-	private final Identifier CMM_BUTTON_TEXTURES = new Identifier("wurst", "cmmbutton.png");
 
-	private TitleScreenMixin(WurstClient wurst, Text text_1)
-	{
-		super(text_1);
-	}
+    private TitleScreenMixin(WurstClient wurst, Text text_1) {
+        super(text_1);
+    }
 
-	@Inject(at = {@At("RETURN")}, method = {"init()V"})
-	private void onInitWidgetsNormal(CallbackInfo ci)
-	{
-		if(!WurstClient.INSTANCE.isEnabled())
-			return;
+    @Inject(at = {@At("RETURN")}, method = {"init()V"})
+    private void onInitWidgetsNormal(CallbackInfo ci) {
+        if (!WurstClient.INSTANCE.isEnabled())
+            return;
 
-		for(Drawable d : ((IScreen)this).getButtons())
-		{
-			if(!(d instanceof ClickableWidget))
-				continue;
+        for (Drawable d : ((IScreen) this).getButtons()) {
+            if (!(d instanceof ClickableWidget))
+                continue;
 
-			ClickableWidget button = (ClickableWidget)d;
-			if(!button.getMessage().getString()
-				.equals(I18n.translate("menu.online")))
-				continue;
+            ClickableWidget button = (ClickableWidget) d;
+            if (!button.getMessage().getString()
+                    .equals(I18n.translate("menu.online")))
+                continue;
 
-			realmsButton = button;
-			break;
-		}
+            realmsButton = button;
+            break;
+        }
 
-		if(realmsButton == null)
-			throw new IllegalStateException("Couldn't find realms button!");
+        if (realmsButton == null)
+            throw new IllegalStateException("Couldn't find realms button!");
 
-		// make Realms button smaller
-		realmsButton.setWidth(98);
+        // make Realms button smaller
+        realmsButton.setWidth(98);
 
-		// add AltManager button
-		addDrawableChild(altsButton = new TexturedButtonWidget(width / 2 + 104,
-				realmsButton.getY(), 20, 20, 0, 0, 20, CMM_BUTTON_TEXTURES, 20, 40,
-				b -> client.setScreen(new AltManagerScreen(this,
-						WurstClient.INSTANCE.getAltManager())), Text.literal("Alt Manager")));
-	}
+        Identifier CMM_BUTTON_TEXTURES = new Identifier("wurst", "cmmbutton.png");
 
-	@Inject(at = {@At("RETURN")}, method = {"tick()V"})
-	private void onTick(CallbackInfo ci)
-	{
-		if(realmsButton == null || altsButton == null)
-			return;
+        // add AltManager button
+        addDrawableChild(altsButton = new TexturedButtonWidget(width / 2 + 104,
+                realmsButton.getY(), 20, 20, 0, 0, 20, CMM_BUTTON_TEXTURES, 20, 40,
+                b -> client.setScreen(new AltManagerScreen(this,
+                        WurstClient.INSTANCE.getAltManager())), Text.literal("Alt Manager")));
+    }
 
-		// adjust AltManager button if Realms button has been moved
-		// happens when ModMenu is installed
-		altsButton.setY(realmsButton.getY());
-	}
+    @Inject(at = {@At("RETURN")}, method = {"tick()V"})
+    private void onTick(CallbackInfo ci) {
+        if (realmsButton == null || altsButton == null)
+            return;
 
-	/**
-	 * Stops the multiplayer button being grayed out if the user's Microsoft
-	 * account is parental-control'd or banned from online play.
-	 */
-	@Inject(at = @At("HEAD"),
-		method = "getMultiplayerDisabledText()Lnet/minecraft/text/Text;",
-		cancellable = true)
-	private void onGetMultiplayerDisabledText(CallbackInfoReturnable<Text> cir)
-	{
-		cir.setReturnValue(null);
-	}
+        // adjust AltManager button if Realms button has been moved
+        // happens when ModMenu is installed
+        altsButton.setY(realmsButton.getY());
+    }
+
+    /**
+     * Stops the multiplayer button being grayed out if the user's Microsoft
+     * account is parental-control'd or banned from online play.
+     */
+    @Inject(at = @At("HEAD"),
+            method = "getMultiplayerDisabledText()Lnet/minecraft/text/Text;",
+            cancellable = true)
+    private void onGetMultiplayerDisabledText(CallbackInfoReturnable<Text> cir) {
+        cir.setReturnValue(null);
+    }
 }

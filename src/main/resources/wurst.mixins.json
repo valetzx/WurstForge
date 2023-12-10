@@ -59,6 +59,7 @@
     "ServerListMixin",
     "ShulkerBoxScreenMixin",
     "SimpleOptionMixin",
+    "SodiumBlockOcclusionCacheMixin",
     "StatsScreenMixin",
     "StatusEffectInstanceMixin",
     "SwordItemMixin",

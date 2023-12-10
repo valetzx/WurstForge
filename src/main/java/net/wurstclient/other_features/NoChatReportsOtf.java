@@ -52,29 +52,29 @@ public final class NoChatReportsOtf extends OtherFeature
 	@Override
 	public void onUpdate()
 	{
-		ClientPlayNetworkHandler netHandler = MC.getNetworkHandler();
-		if(netHandler == null)
-			return;
-
-		if(isActive())
-		{
-			netHandler.session = null;
-			netHandler.messagePacker = MessageChain.Packer.NONE;
-
-		}else if(netHandler.session == null)
-			MC.getProfileKeys().fetchKeyPair()
-				.thenAcceptAsync(optional -> optional
-					.ifPresent(profileKeys -> netHandler.session =
-						ClientPlayerSession.create(profileKeys)),
-					MC);
-
-		EVENTS.remove(UpdateListener.class, this);
+		//ClientPlayNetworkHandler netHandler = MC.getNetworkHandler();
+		//if(netHandler == null)
+		//	return;
+		//
+		//if(isActive())
+		//{
+		//	netHandler.session = null;
+		//	netHandler.messagePacker = MessageChain.Packer.NONE;
+		//
+		//}else if(netHandler.session == null)
+		//	MC.getProfileKeys().fetchKeyPair()
+		//		.thenAcceptAsync(optional -> optional
+		//			.ifPresent(profileKeys -> netHandler.session =
+		//				ClientPlayerSession.create(profileKeys)),
+		//			MC);
+		//
+		//EVENTS.remove(UpdateListener.class, this);
 	}
 
 	private void onLoginStart(ClientLoginNetworkHandler handler,
 		MinecraftClient client)
 	{
-		EVENTS.add(UpdateListener.class, NoChatReportsOtf.this);
+		//EVENTS.add(UpdateListener.class, NoChatReportsOtf.this);
 	}
 
 	public MessageIndicator modifyIndicator(Text message,
