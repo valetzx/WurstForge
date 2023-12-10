@@ -38,7 +38,7 @@ loom {
         // in SRG mapped ("func_" / "field_" with MCP class names) to work!
         // (both of these things may be subject to change in the future)
     }
-        accessWidenerPath = file("src/main/resources/wurst.accesswidener")
+    accessWidenerPath = file("src/main/resources/wurst.accesswidener")
 }
 
 repositories {
@@ -58,10 +58,10 @@ dependencies {
     // mojang's official mappings, or feel free
     // to add your own mappings here (how about
     // mojmap layered with parchment, for example?)
-    //mappings loom.officialMojangMappings()
+//    mappings loom.officialMojangMappings()
 
     // uncomment this if you want to use yarn mappings
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 
     // your forge dependency, this is **required** when using Forge Loom in forge mode!
     forge "net.minecraftforge:forge:${project.forge_version}"
