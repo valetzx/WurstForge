@@ -20,7 +20,7 @@ import net.minecraft.world.BlockView;
 import net.wurstclient.event.EventManager;
 import net.wurstclient.events.ShouldDrawSideListener;
 
-@Pseudo
+/*@Pseudo
 @Mixin(
 	targets = "me.jellysquid.mods.sodium.client.render.occlusion.BlockOcclusionCache",
 	remap = false)
@@ -41,3 +41,4 @@ public class SodiumBlockOcclusionCacheMixin
 			cir.setReturnValue(event.isRendered());
 	}
 }
+*/
