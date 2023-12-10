@@ -58,7 +58,7 @@ dependencies {
     // mojang's official mappings, or feel free
     // to add your own mappings here (how about
     // mojmap layered with parchment, for example?)
-    mappings loom.officialMojangMappings()
+    //mappings loom.officialMojangMappings()
 
     // uncomment this if you want to use yarn mappings
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
