@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModMetadata;
+//import net.fabricmc.loader.api.FabricLoader;
+//import net.fabricmc.loader.api.ModContainer;
+//import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraftforge.fml.ModList;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
 import net.wurstclient.Category;
@@ -77,13 +78,7 @@ public final class XRayHack extends Hack implements UpdateListener,
 		setCategory(Category.RENDER);
 		addSetting(ores);
 		
-		List<String> mods = FabricLoader.getInstance().getAllMods().stream()
-			.map(ModContainer::getMetadata).map(ModMetadata::getId)
-			.collect(Collectors.toList());
-		
-		Pattern optifine = Pattern.compile("opti(?:fine|fabric).*");
-		
-		if(mods.stream().anyMatch(optifine.asPredicate()))
+		if(ModList.get().isLoaded("optifine"))
 			warning = "OptiFine is installed. X-Ray will not work properly!";
 		else
 			warning = null;
