@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-//import net.fabricmc.loader.api.FabricLoader;
-//import net.fabricmc.loader.api.ModContainer;
-//import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraftforge.fml.ModList;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
@@ -65,36 +62,36 @@ public final class XRayHack extends Hack implements UpdateListener,
 		"minecraft:redstone_ore", "minecraft:repeating_command_block",
 		"minecraft:spawner", "minecraft:suspicious_sand", "minecraft:tnt",
 		"minecraft:torch", "minecraft:trapped_chest", "minecraft:water");
-	
+
 	private ArrayList<String> oreNames;
 	private final String warning;
-	
+
 	private final String renderName =
 		Math.random() < 0.01 ? "X-Wurst" : getName();
-	
+
 	public XRayHack()
 	{
 		super("X-Ray");
 		setCategory(Category.RENDER);
 		addSetting(ores);
-		
+
 		if(ModList.get().isLoaded("optifine"))
 			warning = "OptiFine is installed. X-Ray will not work properly!";
 		else
 			warning = null;
 	}
-	
+
 	@Override
 	public String getRenderName()
 	{
 		return renderName;
 	}
-	
+
 	@Override
 	public void onEnable()
 	{
 		oreNames = new ArrayList<>(ores.getBlockNames());
-		
+
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(SetOpaqueCubeListener.class, this);
 		EVENTS.add(GetAmbientOcclusionLightLevelListener.class, this);
@@ -102,11 +99,11 @@ public final class XRayHack extends Hack implements UpdateListener,
 		EVENTS.add(TesselateBlockListener.class, this);
 		EVENTS.add(RenderBlockEntityListener.class, this);
 		MC.worldRenderer.reload();
-		
+
 		if(warning != null)
 			ChatUtils.warning(warning);
 	}
-	
+
 	@Override
 	public void onDisable()
 	{
@@ -117,65 +114,65 @@ public final class XRayHack extends Hack implements UpdateListener,
 		EVENTS.remove(TesselateBlockListener.class, this);
 		EVENTS.remove(RenderBlockEntityListener.class, this);
 		MC.worldRenderer.reload();
-		
+
 		@SuppressWarnings("unchecked")
 		ISimpleOption<Double> gammaOption =
 			(ISimpleOption<Double>)(Object)MC.options.getGamma();
-		
+
 		// TODO: Why does this use 0.5 instead of
 		// FullBright's defaultGamma setting?
 		if(!WURST.getHax().fullbrightHack.isEnabled())
 			gammaOption.forceSetValue(0.5);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		@SuppressWarnings("unchecked")
 		ISimpleOption<Double> gammaOption =
 			(ISimpleOption<Double>)(Object)MC.options.getGamma();
-		
+
 		gammaOption.forceSetValue(16.0);
 	}
-	
+
 	@Override
 	public void onSetOpaqueCube(SetOpaqueCubeEvent event)
 	{
 		event.cancel();
 	}
-	
+
 	@Override
 	public void onGetAmbientOcclusionLightLevel(
 		GetAmbientOcclusionLightLevelEvent event)
 	{
 		event.setLightLevel(1);
 	}
-	
+
 	@Override
 	public void onShouldDrawSide(ShouldDrawSideEvent event)
 	{
 		event.setRendered(isVisible(event.getState().getBlock()));
 	}
-	
+
 	@Override
 	public void onTesselateBlock(TesselateBlockEvent event)
 	{
 		if(!isVisible(event.getState().getBlock()))
 			event.cancel();
 	}
-	
+
 	@Override
 	public void onRenderBlockEntity(RenderBlockEntityEvent event)
 	{
 		if(!isVisible(BlockUtils.getBlock(event.getBlockEntity().getPos())))
 			event.cancel();
 	}
-	
+
 	public void openBlockListEditor(Screen prevScreen)
 	{
 		MC.setScreen(new EditBlockListScreen(prevScreen, ores));
 	}
-	
+
 	private boolean isVisible(Block block)
 	{
 		String name = BlockUtils.getName(block);

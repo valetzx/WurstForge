@@ -33,11 +33,11 @@ public class IngameHudMixin extends DrawableHelper
 	{
 		if(WurstClient.MC.options.debugEnabled)
 			return;
-		
+
 		GUIRenderEvent event = new GUIRenderEvent(matrixStack, partialTicks);
 		EventManager.fire(event);
 	}
-	
+
 	@Inject(at = @At("HEAD"),
 		method = "renderOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/Identifier;F)V",
 		cancellable = true)
@@ -46,13 +46,13 @@ public class IngameHudMixin extends DrawableHelper
 	{
 		if(identifier == null || identifier.getPath() == null)
 			return;
-		
+
 		if(!identifier.getPath().equals("textures/misc/pumpkinblur.png"))
 			return;
-		
+
 		if(!WurstClient.INSTANCE.getHax().noPumpkinHack.isEnabled())
 			return;
-		
+
 		ci.cancel();
 	}
 }

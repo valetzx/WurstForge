@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 import org.lwjgl.glfw.GLFW;
 
-//import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -53,13 +52,13 @@ import net.wurstclient.util.json.JsonException;
 public enum WurstClient
 {
 	INSTANCE;
-	
+
 	public static MinecraftClient MC;
 	public static IMinecraftClient IMC;
-	
+
 	public static final String VERSION = "7.35.2";
 	public static final String MC_VERSION = "1.19.4";
-	
+
 	private WurstAnalytics analytics;
 	private EventManager eventManager;
 	private AltManager altManager;
@@ -75,199 +74,199 @@ public enum WurstClient
 	private IngameHUD hud;
 	private RotationFaker rotationFaker;
 	private FriendsList friends;
-	
+
 	private boolean enabled = true;
 	private static boolean guiInitialized;
 	private WurstUpdater updater;
 	private ProblematicResourcePackDetector problematicPackDetector;
 	private Path wurstFolder;
-	
+
 	private KeyBinding zoomKey;
-	
+
 	public void initialize()
 	{
 		System.out.println("Starting Wurst Client...");
-		
+
 		MC = MinecraftClient.getInstance();
 		IMC = (IMinecraftClient)MC;
 		wurstFolder = createWurstFolder();
-		
+
 		String trackingID = "UA-52838431-5";
 		String hostname = "client.wurstclient.net";
 		Path analyticsFile = wurstFolder.resolve("analytics.json");
 		analytics = new WurstAnalytics(trackingID, hostname, analyticsFile);
-		
+
 		eventManager = new EventManager(this);
-		
+
 		Path enabledHacksFile = wurstFolder.resolve("enabled-hacks.json");
 		hax = new HackList(enabledHacksFile);
-		
+
 		cmds = new CmdList();
-		
+
 		otfs = new OtfList();
-		
+
 		Path settingsFile = wurstFolder.resolve("settings.json");
 		settingsProfileFolder = wurstFolder.resolve("settings");
 		this.settingsFile = new SettingsFile(settingsFile, hax, cmds, otfs);
 		this.settingsFile.load();
 		hax.tooManyHaxHack.loadBlockedHacksFile();
-		
+
 		Path keybindsFile = wurstFolder.resolve("keybinds.json");
 		keybinds = new KeybindList(keybindsFile);
-		
+
 		Path guiFile = wurstFolder.resolve("windows.json");
 		gui = new ClickGui(guiFile);
-		
+
 		Path preferencesFile = wurstFolder.resolve("preferences.json");
 		navigator = new Navigator(preferencesFile, hax, cmds, otfs);
-		
+
 		Path friendsFile = wurstFolder.resolve("friends.json");
 		friends = new FriendsList(friendsFile);
 		friends.load();
-		
+
 		cmdProcessor = new CmdProcessor(cmds);
 		eventManager.add(ChatOutputListener.class, cmdProcessor);
-		
+
 		KeybindProcessor keybindProcessor =
 			new KeybindProcessor(hax, keybinds, cmdProcessor);
 		eventManager.add(KeyPressListener.class, keybindProcessor);
-		
+
 		hud = new IngameHUD();
 		eventManager.add(GUIRenderListener.class, hud);
-		
+
 		rotationFaker = new RotationFaker();
 		eventManager.add(PreMotionListener.class, rotationFaker);
 		eventManager.add(PostMotionListener.class, rotationFaker);
-		
+
 		updater = new WurstUpdater();
 		eventManager.add(UpdateListener.class, updater);
-		
+
 		problematicPackDetector = new ProblematicResourcePackDetector();
 		problematicPackDetector.start();
-		
+
 		Path altsFile = wurstFolder.resolve("alts.encrypted_json");
 		Path encFolder =
 			Paths.get(System.getProperty("user.home"), ".Wurst encryption")
 				.normalize();
 		altManager = new AltManager(altsFile, encFolder);
-		
+
 		zoomKey = new KeyBinding("key.wurst.zoom", InputUtil.Type.KEYSYM,
 			GLFW.GLFW_KEY_V, "Zoom");
 		new RegisterKeyMappingsEvent(MinecraftClient.getInstance().options).register(zoomKey);
-		
+
 		analytics.trackPageView("/mc" + MC_VERSION + "/v" + VERSION,
 			"Wurst " + VERSION + " MC" + MC_VERSION);
 	}
-	
+
 	private Path createWurstFolder()
 	{
 		Path dotMinecraftFolder = MC.runDirectory.toPath().normalize();
 		Path wurstFolder = dotMinecraftFolder.resolve("wurst");
-		
+
 		try
 		{
 			Files.createDirectories(wurstFolder);
-			
+
 		}catch(IOException e)
 		{
 			throw new RuntimeException(
 				"Couldn't create .minecraft/wurst folder.", e);
 		}
-		
+
 		return wurstFolder;
 	}
-	
+
 	public String translate(String key)
 	{
 		if(otfs.translationsOtf.getForceEnglish().isChecked())
 			return IMC.getLanguageManager().getEnglish().get(key);
-			
+
 		// This extra check is necessary because I18n.translate() doesn't
 		// always return the key when the translation is missing. If the key
 		// contains a '%', it will return "Format Error: key" instead.
 		if(!I18n.hasTranslation(key))
 			return key;
-		
+
 		return I18n.translate(key);
 	}
-	
+
 	public WurstAnalytics getAnalytics()
 	{
 		return analytics;
 	}
-	
+
 	public EventManager getEventManager()
 	{
 		return eventManager;
 	}
-	
+
 	public void saveSettings()
 	{
 		settingsFile.save();
 	}
-	
+
 	public ArrayList<Path> listSettingsProfiles()
 	{
 		if(!Files.isDirectory(settingsProfileFolder))
 			return new ArrayList<>();
-		
+
 		try(Stream<Path> files = Files.list(settingsProfileFolder))
 		{
 			return files.filter(Files::isRegularFile)
 				.collect(Collectors.toCollection(ArrayList::new));
-			
+
 		}catch(IOException e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void loadSettingsProfile(String fileName)
 		throws IOException, JsonException
 	{
 		settingsFile.loadProfile(settingsProfileFolder.resolve(fileName));
 	}
-	
+
 	public void saveSettingsProfile(String fileName)
 		throws IOException, JsonException
 	{
 		settingsFile.saveProfile(settingsProfileFolder.resolve(fileName));
 	}
-	
+
 	public HackList getHax()
 	{
 		return hax;
 	}
-	
+
 	public CmdList getCmds()
 	{
 		return cmds;
 	}
-	
+
 	public OtfList getOtfs()
 	{
 		return otfs;
 	}
-	
+
 	public Feature getFeatureByName(String name)
 	{
 		Hack hack = getHax().getHackByName(name);
 		if(hack != null)
 			return hack;
-		
+
 		Command cmd = getCmds().getCmdByName(name.substring(1));
 		if(cmd != null)
 			return cmd;
-		
+
 		OtherFeature otf = getOtfs().getOtfByName(name);
 		return otf;
 	}
-	
+
 	public KeybindList getKeybinds()
 	{
 		return keybinds;
 	}
-	
+
 	public ClickGui getGui()
 	{
 		if(!guiInitialized)
@@ -275,71 +274,71 @@ public enum WurstClient
 			guiInitialized = true;
 			gui.init();
 		}
-		
+
 		return gui;
 	}
-	
+
 	public Navigator getNavigator()
 	{
 		return navigator;
 	}
-	
+
 	public CmdProcessor getCmdProcessor()
 	{
 		return cmdProcessor;
 	}
-	
+
 	public IngameHUD getHud()
 	{
 		return hud;
 	}
-	
+
 	public RotationFaker getRotationFaker()
 	{
 		return rotationFaker;
 	}
-	
+
 	public FriendsList getFriends()
 	{
 		return friends;
 	}
-	
+
 	public boolean isEnabled()
 	{
 		return enabled;
 	}
-	
+
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
-		
+
 		if(!enabled)
 		{
 			hax.panicHack.setEnabled(true);
 			hax.panicHack.onUpdate();
 		}
 	}
-	
+
 	public WurstUpdater getUpdater()
 	{
 		return updater;
 	}
-	
+
 	public ProblematicResourcePackDetector getProblematicPackDetector()
 	{
 		return problematicPackDetector;
 	}
-	
+
 	public Path getWurstFolder()
 	{
 		return wurstFolder;
 	}
-	
+
 	public KeyBinding getZoomKey()
 	{
 		return zoomKey;
 	}
-	
+
 	public AltManager getAltManager()
 	{
 		return altManager;
