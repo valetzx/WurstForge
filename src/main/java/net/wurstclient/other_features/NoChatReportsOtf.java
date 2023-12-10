@@ -7,7 +7,7 @@
  */
 package net.wurstclient.other_features;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
+//import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.client.gui.hud.MessageIndicator.Icon;
@@ -47,7 +47,7 @@ public final class NoChatReportsOtf extends OtherFeature
 		super("NoChatReports", "description.wurst.other_feature.nochatreports");
 		addSetting(disableSignatures);
 		
-		ClientLoginConnectionEvents.INIT.register(this::onLoginStart);
+		//ClientLoginConnectionEvents.INIT.register(this::onLoginStart);
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public final class NoChatReportsOtf extends OtherFeature
 	private void onLoginStart(ClientLoginNetworkHandler handler,
 		MinecraftClient client)
 	{
-		EVENTS.add(UpdateListener.class, NoChatReportsOtf.this);
+		//EVENTS.add(UpdateListener.class, NoChatReportsOtf.this);
 	}
 	
 	public MessageIndicator modifyIndicator(Text message,
