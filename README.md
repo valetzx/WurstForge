@@ -8,11 +8,11 @@ architectury-templates: https://github.com/architectury/architectury-templates
 Current completed version:
  - 1.18.2
  - 1.19.2
+
 ABOVE AT: https://github.com/wu452148993/wurst
 
 Current completed version:
  - 1.19.4
-
 
 TODO:
  - Complete more versions
