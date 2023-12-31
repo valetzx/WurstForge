@@ -10,6 +10,8 @@ package net.wurstclient.mixin;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.Drawable;
+import net.wurstclient.mixinterface.IScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
+//import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -81,14 +83,14 @@ public abstract class GameMenuScreenMixin extends Screen
 	
 	private void addWurstOptionsButton()
 	{
-		List<ClickableWidget> buttons = Screens.getButtons(this);
+		List<Drawable> buttons = ((IScreen)this).getButtons();
 		
 		int buttonY = -1;
 		int buttonI = -1;
 		
 		for(int i = 0; i < buttons.size(); i++)
 		{
-			ClickableWidget button = buttons.get(i);
+			ClickableWidget button = (ClickableWidget)buttons.get(i);
 			
 			// insert Wurst button in place of feedback/report row
 			if(isFeedbackButton(button))
@@ -112,7 +114,7 @@ public abstract class GameMenuScreenMixin extends Screen
 			.builder(Text.literal("            Options"),
 				b -> openWurstOptions())
 			.dimensions(width / 2 - 102, buttonY, 204, 20).build();
-		buttons.add(wurstOptionsButton);
+		addDrawableChild(wurstOptionsButton);
 	}
 	
 	private void openWurstOptions()

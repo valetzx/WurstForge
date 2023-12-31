@@ -38,6 +38,8 @@
     "GenericContainerScreenMixin",
     "IngameHudMixin",
     "InGameOverlayRendererMixin",
+    "ToastManagerAccessor",
+    "ForgeIngameGuiMixin",
     "KeyBindingMixin",
     "KeyboardMixin",
     "LanguageManagerMixin",

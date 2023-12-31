@@ -7,6 +7,8 @@
  */
 package net.wurstclient.mixin;
 
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,6 +31,7 @@ public abstract class TitleScreenMixin extends Screen
 {
 	private ClickableWidget realmsButton = null;
 	private ButtonWidget altsButton;
+	private final Identifier CMM_BUTTON_TEXTURES = new Identifier("wurst", "cmmbutton.png");
 	
 	private TitleScreenMixin(WurstClient wurst, Text title)
 	{
@@ -61,7 +64,7 @@ public abstract class TitleScreenMixin extends Screen
 		realmsButton.setWidth(98);
 		
 		// add AltManager button
-		addDrawableChild(altsButton = ButtonWidget
+		addDrawableChild(altsButton = TexturedButtonWidget
 			.builder(Text.literal("Alt Manager"),
 				b -> client.setScreen(new AltManagerScreen(this,
 					WurstClient.INSTANCE.getAltManager())))
