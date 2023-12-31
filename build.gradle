@@ -26,7 +26,7 @@ loom {
         // specify the mixin configs used in this mod
         // this will be added to the jar manifest as well!
         mixinConfigs = [
-                "wurst.mixins.json"
+                "examplemod.mixins.json"
         ]
 
         // missing access transformers?
@@ -38,7 +38,6 @@ loom {
         // in SRG mapped ("func_" / "field_" with MCP class names) to work!
         // (both of these things may be subject to change in the future)
     }
-    accessWidenerPath = file("src/main/resources/wurst.accesswidener")
 }
 
 repositories {
@@ -58,10 +57,10 @@ dependencies {
     // mojang's official mappings, or feel free
     // to add your own mappings here (how about
     // mojmap layered with parchment, for example?)
-//    mappings loom.officialMojangMappings()
+    mappings loom.officialMojangMappings()
 
     // uncomment this if you want to use yarn mappings
-     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    // mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 
     // your forge dependency, this is **required** when using Forge Loom in forge mode!
     forge "net.minecraftforge:forge:${project.forge_version}"
@@ -76,9 +75,9 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     // don't worry about loom "not finding a forge mod" here,
     // JEI's api just doesn't have any class with an @Mod annotation
-    // modCompileOnly "mezz.jei:jei-1.19.4:${jei_version}:api"
+    // modCompileOnly "mezz.jei:jei-1.20.1:${jei_version}:api"
     // at runtime, use the full JEI jar
-    // modRuntimeOnly "mezz.jei:jei-1.19.4:${jei_version}"
+    // modRuntimeOnly "mezz.jei:jei-1.20.1:${jei_version}"
 }
 
 processResources {

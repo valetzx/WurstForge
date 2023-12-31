@@ -1,8 +1,7 @@
 package com.example.examplemod;
 
-import net.minecraft.client.MinecraftClient;
-import net.wurstclient.WurstClient;
-import net.minecraft.item.Items;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -14,22 +13,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-@Mod("wurst")
+@Mod("examplemod")
 public class ExampleMod {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private static boolean initialized;
-
     public ExampleMod() {
-
-        if(initialized)
-            throw new RuntimeException(
-                    "WurstInitializer.onInitialize() ran twice!");
-
-        WurstClient.INSTANCE.initialize();
-        initialized = true;
 
         // This is our mod's event bus, used for things like registry or lifecycle events
         IEventBus MOD_BUS = FMLJavaModLoadingContext.get().getModEventBus();
@@ -56,7 +45,7 @@ public class ExampleMod {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        LOGGER.info("Hey, we're on Minecraft version {}!", MinecraftClient.getInstance().getGameVersion());
+        LOGGER.info("Hey, we're on Minecraft version {}!", Minecraft.getInstance().getLaunchedVersion());
     }
 
     @SubscribeEvent

@@ -60,6 +60,10 @@
 #
 #       You can find Gradle at https://github.com/gradle/gradle/.
 #
+# sudo apt install openjdk-17-jdk -y
+# JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+#
+#
 ##############################################################################
 
 # Attempt to set APP_HOME
@@ -67,7 +71,6 @@
 # Resolve links: $0 may be a link
 app_path=$0
 JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-
 # Need this for daisy-chained symlinks.
 while
     APP_HOME=${app_path%"${app_path##*/}"}  # leaves a trailing /; empty if no leading path
