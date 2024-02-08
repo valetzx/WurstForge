@@ -66,6 +66,7 @@
 
 # Resolve links: $0 may be a link
 app_path=$0
+# Install java17 before build sudo apt install openjdk-17-jdk
 JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # Need this for daisy-chained symlinks.
